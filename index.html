@@ -119,6 +119,26 @@ body{font-family:'Inter',sans-serif;background:var(--bg);min-height:100vh;
 .sw{background:none;border:none;font-size:10.5px;color:var(--text3);cursor:pointer;text-decoration:underline;font-family:'Inter',sans-serif;padding:0;}
 .sw:hover{color:var(--text2);}
 @media(max-width:520px){.widget{height:100vh;max-width:100%;border-radius:0;}body{padding:0;}}
+
+/* KEY SCREEN */
+#key-screen{flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:32px 28px;gap:14px;}
+.key-logo{font-size:40px;margin-bottom:4px;}
+.key-title{font-size:20px;font-weight:700;color:var(--text);text-align:center;}
+.key-desc{font-size:12.5px;color:var(--text2);text-align:center;line-height:1.6;max-width:320px;}
+.key-inp{width:100%;background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:10px;padding:11px 14px;font-size:13px;font-family:'Inter',sans-serif;
+  color:var(--text);outline:none;transition:border-color .15s;letter-spacing:.5px;}
+.key-inp:focus{border-color:var(--purple);}
+.key-inp::placeholder{color:var(--text3);letter-spacing:0;}
+.key-err{font-size:12px;color:#E74C3C;min-height:16px;text-align:center;}
+.key-btn{width:100%;background:var(--purple);color:#fff;border:none;border-radius:10px;
+  padding:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif;
+  transition:.15s;}
+.key-btn:hover{filter:brightness(1.1);}
+.key-btn:disabled{background:var(--surface3);cursor:not-allowed;filter:none;}
+.key-hint{font-size:11.5px;color:var(--text3);text-align:center;line-height:1.7;}
+.key-hint strong{color:var(--text2);}
 </style>
 </head>
 <body>
@@ -133,7 +153,21 @@ body{font-family:'Inter',sans-serif;background:var(--bg);min-height:100vh;
     <div class="back" id="backBtn">↩</div>
   </div>
 
-  <div id="role-screen">
+  <!-- API KEY SCREEN -->
+  <div id="key-screen">
+    <div class="key-logo">🔑</div>
+    <div class="key-title">Enter your API Key</div>
+    <div class="key-desc">Your key is only stored for this session — never saved to any server or file.</div>
+    <input class="key-inp" id="keyInp" type="password" placeholder="sk-ant-api03-..." />
+    <div class="key-err" id="keyErr"></div>
+    <button class="key-btn" id="keyBtn">Start chatting →</button>
+    <div class="key-hint">
+      Get your key at <strong>console.anthropic.com</strong><br>
+      Your key stays private — only used in your browser session
+    </div>
+  </div>
+
+  <div id="role-screen" style="display:none;">
     <div class="role-q">Who are you?<small>I will tailor my answers to your role</small></div>
     <div class="cards">
       <div class="card c-hr" id="btnHR">
@@ -179,7 +213,7 @@ body{font-family:'Inter',sans-serif;background:var(--bg);min-height:100vh;
 </div>
 
 <script>
-var APIKEY = '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'; // ← paste your Anthropic API key here
+var APIKEY = sessionStorage.getItem('uac_key') || '';
 
 var SUGG = {
   hr:  ['How do I mark an employee as exiting?','What is Effective From?','Can I change the date later?','What happens after I save?','What is auto-transfer?','How do I check transfer progress?'],
@@ -414,11 +448,68 @@ auto_transfer executed → auto_transferred
 HR clears field → cancel all pending, log cancellation, close process`
 };
 
-var role = null, history = [], busy = false;
+var role = null, chatHistory = [], busy = false;
+
+
+function initKeyScreen() {
+  var stored = sessionStorage.getItem('uac_key');
+  if (stored && stored.startsWith('sk-ant-')) {
+    APIKEY = stored;
+    document.getElementById('key-screen').style.display = 'none';
+    if (APIKEY) { document.getElementById('role-screen').style.display = 'flex'; document.getElementById('key-screen').style.display = 'none'; } else { document.getElementById('key-screen').style.display = 'flex'; document.getElementById('role-screen').style.display = 'none'; }
+    return;
+  }
+  document.getElementById('key-screen').style.display = 'flex';
+  document.getElementById('role-screen').style.display = 'none';
+}
+
+function submitKey() {
+  var val = document.getElementById('keyInp').value.trim();
+  var err = document.getElementById('keyErr');
+  var btn = document.getElementById('keyBtn');
+  if (!val) { err.textContent = 'Please enter your API key.'; return; }
+  if (!val.startsWith('sk-ant-')) { err.textContent = 'Invalid key — must start with sk-ant-...'; return; }
+  err.textContent = '';
+  btn.disabled = true;
+  btn.textContent = 'Verifying...';
+  // Quick test call
+  fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
+      'x-api-key': val
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-5',
+      max_tokens: 10,
+      messages: [{role:'user', content:'hi'}]
+    })
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(d){
+    if (d.error) {
+      err.textContent = 'Invalid key: ' + (d.error.message || 'Authentication failed');
+      btn.disabled = false;
+      btn.textContent = 'Start chatting →';
+    } else {
+      APIKEY = val;
+      sessionStorage.setItem('uac_key', val);
+      document.getElementById('key-screen').style.display = 'none';
+      if (APIKEY) { document.getElementById('role-screen').style.display = 'flex'; document.getElementById('key-screen').style.display = 'none'; } else { document.getElementById('key-screen').style.display = 'flex'; document.getElementById('role-screen').style.display = 'none'; }
+    }
+  })
+  .catch(function(e){
+    err.textContent = 'Connection error. Please try again.';
+    btn.disabled = false;
+    btn.textContent = 'Start chatting →';
+  });
+}
 
 function pickRole(r) {
   role = r;
-  history = [];
+  chatHistory = [];
   var labels = {hr:'HR', qa:'QA Engineer', dev:'Developer'};
   var badge = document.getElementById('badge');
   badge.textContent = labels[r];
@@ -449,11 +540,11 @@ function pickRole(r) {
 }
 
 function resetRole() {
-  role = null; history = [];
+  role = null; chatHistory = [];
   document.getElementById('badge').className = 'badge';
   document.getElementById('sub').textContent = 'Select your role to begin';
   document.getElementById('dot').className = 'dot';
-  document.getElementById('role-screen').style.display = 'flex';
+  if (APIKEY) { document.getElementById('role-screen').style.display = 'flex'; document.getElementById('key-screen').style.display = 'none'; } else { document.getElementById('key-screen').style.display = 'flex'; document.getElementById('role-screen').style.display = 'none'; }
   document.getElementById('chat-screen').style.display = 'none';
   document.getElementById('msgs').innerHTML = '';
   document.getElementById('inp').value = '';
@@ -467,7 +558,7 @@ function doSend(text) {
   if (!text) { inp.value = ''; inp.style.height = 'auto'; }
   document.getElementById('suggWrap').style.display = 'none';
   addUser(msg);
-  history.push({role:'user', content:msg});
+  chatHistory.push({role:'user', content:msg});
   setBusy(true);
   addTyping();
   fetch('https://api.anthropic.com/v1/messages', {
@@ -479,10 +570,10 @@ function doSend(text) {
       'x-api-key': APIKEY
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5',
       max_tokens: 1000,
       system: KB[role],
-      messages: history
+      messages: chatHistory
     })
   })
   .then(function(r){ return r.json(); })
@@ -492,7 +583,7 @@ function doSend(text) {
       addBot('⚠️ <strong>API Error:</strong> ' + (d.error.message||'Unknown error') + '<br><br>Make sure <code>APIKEY</code> is set correctly at the top of the script.');
     } else {
       var reply = d.content && d.content[0] ? d.content[0].text : 'No response received.';
-      history.push({role:'assistant', content:reply});
+      chatHistory.push({role:'assistant', content:reply});
       addBot(fmtMsg(reply));
     }
     setBusy(false);
@@ -558,6 +649,9 @@ function fmtMsg(text) {
 }
 
 // Wire up buttons directly — no DOMContentLoaded needed since script is at bottom
+document.getElementById('keyBtn').onclick = submitKey;
+document.getElementById('keyInp').onkeydown = function(e){ if(e.key==='Enter') submitKey(); };
+initKeyScreen();
 document.getElementById('btnHR').onclick  = function(){ pickRole('hr'); };
 document.getElementById('btnQA').onclick  = function(){ pickRole('qa'); };
 document.getElementById('btnDev').onclick = function(){ pickRole('dev'); };
