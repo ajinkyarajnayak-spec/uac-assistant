@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UAC Assistant — Team Announcement</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0B1628;--blue:#1560BD;--blue2:#1A73E8;--blue-l:#E8F0FE;
+  --green:#0D6E4C;--green-l:#E6F4ED;--amber:#92400E;--amber-l:#FEF3C7;
+  --red:#991B1B;--text:#1A202C;--text2:#4A5568;--text3:#718096;
+  --border:#E2E8F0;--white:#fff;--bg:#F7F9FC;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ── ANNOUNCEMENT PAGE ── */
+.page{max-width:680px;margin:0 auto;padding:48px 24px 80px;}
+
+.logo-row{display:flex;align-items:center;gap:10px;margin-bottom:40px;}
+.logo{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#6366F1,#8B5CF6);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.logo-text{font-size:15px;font-weight:600;color:var(--navy);}
+.logo-sub{font-size:12px;color:var(--text3);}
+
+.hero{background:var(--navy);border-radius:20px;padding:40px 36px;margin-bottom:32px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(99,102,241,.2);}
+.hero::after{content:'';position:absolute;bottom:-60px;left:-20px;width:140px;height:140px;border-radius:50%;background:rgba(139,92,246,.1);}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:20px;padding:4px 12px;font-size:11.5px;font-weight:500;color:rgba(255,255,255,.8);margin-bottom:16px;position:relative;z-index:1;}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:#4ADE80;box-shadow:0 0 0 2px rgba(74,222,128,.3);}
+.hero h1{font-size:26px;font-weight:700;color:#fff;line-height:1.25;margin-bottom:10px;position:relative;z-index:1;}
+.hero p{font-size:14px;color:rgba(255,255,255,.65);line-height:1.7;position:relative;z-index:1;max-width:480px;}
+
+.section{margin-bottom:28px;}
+.section-title{font-size:12px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;color:var(--text3);margin-bottom:12px;}
+
+/* ROLE CARDS */
+.role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px;}
+.role-card{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:16px 14px;text-align:center;}
+.role-icon{font-size:24px;margin-bottom:8px;}
+.role-name{font-size:13px;font-weight:700;margin-bottom:4px;}
+.role-desc{font-size:11.5px;color:var(--text3);line-height:1.5;}
+.role-card.r-hr{border-color:#FED7AA;}
+.role-card.r-hr .role-name{color:#C2410C;}
+.role-card.r-qa{border-color:#A7F3D0;}
+.role-card.r-qa .role-name{color:#065F46;}
+.role-card.r-dev{border-color:#BAE6FD;}
+.role-card.r-dev .role-name{color:#0C4A6E;}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:0;}
+.step{display:flex;gap:14px;align-items:flex-start;padding-bottom:20px;position:relative;}
+.step:not(:last-child)::before{content:'';position:absolute;left:15px;top:32px;bottom:0;width:2px;background:var(--border);}
+.step-num{width:32px;height:32px;border-radius:50%;background:var(--navy);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step-body{flex:1;padding-top:4px;}
+.step-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.step-desc{font-size:13px;color:var(--text2);line-height:1.6;}
+.step-link{display:inline-flex;align-items:center;gap:5px;background:var(--blue2);color:#fff;font-size:12.5px;font-weight:600;padding:6px 14px;border-radius:8px;text-decoration:none;margin-top:8px;transition:.15s;}
+.step-link:hover{filter:brightness(1.1);}
+.step-code{font-family:'DM Mono',monospace;font-size:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:2px 8px;color:var(--blue);}
+
+/* INFO BOX */
+.info-box{background:var(--blue-l);border:1.5px solid #BFDBFE;border-radius:12px;padding:16px 18px;margin-bottom:24px;display:flex;gap:12px;align-items:flex-start;}
+.info-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+.info-text{font-size:13px;color:var(--text2);line-height:1.6;}
+.info-text strong{color:var(--text);font-weight:600;}
+
+/* FEEDBACK CTA */
+.feedback-cta{background:linear-gradient(135deg,#F0FDF4,#ECFDF5);border:1.5px solid #6EE7B7;border-radius:16px;padding:24px 22px;text-align:center;margin-bottom:28px;}
+.feedback-cta h3{font-size:16px;font-weight:700;color:var(--green);margin-bottom:6px;}
+.feedback-cta p{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:16px;}
+.cta-btn{display:inline-flex;align-items:center;gap:6px;background:var(--green);color:#fff;font-size:13.5px;font-weight:600;padding:10px 22px;border-radius:10px;text-decoration:none;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;}
+.cta-btn:hover{filter:brightness(1.1);}
+
+/* QUESTIONS */
+.questions-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
+.q-chip{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.4;}
+.q-chip::before{content:'💬 ';font-size:11px;}
+
+/* FOOTER */
+.footer{text-align:center;font-size:12px;color:var(--text3);padding-top:24px;border-top:1px solid var(--border);}
+.footer strong{color:var(--text2);}
+
+@media(max-width:520px){
+  .role-grid{grid-template-columns:1fr;}
+  .questions-grid{grid-template-columns:1fr;}
+  .hero{padding:28px 22px;}
+  .hero h1{font-size:22px;}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Logo -->
+  <div class="logo-row">
+    <div class="logo">🤖</div>
+    <div>
+      <div class="logo-text">UAC Assistant</div>
+      <div class="logo-sub">Phase 2 Knowledge Bot</div>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-badge"><div class="hero-badge-dot"></div> Now Live — Beta</div>
+    <h1>Introducing the UAC Phase 2 Assistant 🎉</h1>
+    <p>We have built an AI-powered assistant that answers your questions about User Access Control Phase 2 — exits, transfers, emails, account hand-overs, and more. Tailored for HR, QA, and Developers.</p>
+  </div>
+
+  <!-- Info -->
+  <div class="info-box">
+    <div class="info-icon">ℹ️</div>
+    <div class="info-text">This is a <strong>beta version</strong>. We need your help to make it better. Use it, test it, and share your feedback — especially when it gives a wrong or incomplete answer. Your feedback directly improves the bot.</div>
+  </div>
+
+  <!-- Who is it for -->
+  <div class="section">
+    <div class="section-title">Who is it for?</div>
+    <div class="role-grid">
+      <div class="role-card r-hr">
+        <div class="role-icon">👩‍💼</div>
+        <div class="role-name">HR</div>
+        <div class="role-desc">Exit dates, Effective Month, what to fill, what happens after Save</div>
+      </div>
+      <div class="role-card r-qa">
+        <div class="role-icon">🧪</div>
+        <div class="role-name">QA Engineer</div>
+        <div class="role-desc">Test cases, edge cases, validations, expected behaviour</div>
+      </div>
+      <div class="role-card r-dev">
+        <div class="role-icon">👨‍💻</div>
+        <div class="role-name">Developer</div>
+        <div class="role-desc">Cron logic, DB schema, API, triggers, implementation details</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- How to use -->
+  <div class="section">
+    <div class="section-title">How to use it — 3 steps</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Open the bot</div>
+          <div class="step-desc">Click the link below. It opens directly in your browser — no download or install needed.</div>
+          <a class="step-link" href="https://ajinkyarajnayak-spec.github.io/uac-assistant" target="_blank">🤖 Open UAC Assistant →</a>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Enter your API key</div>
+          <div class="step-desc">You will need an Anthropic API key to use the bot. Get yours free at <strong>console.anthropic.com</strong> → API Keys → Create Key. Paste it in the bot — it is only stored in your browser session and never saved anywhere.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Pick your role and start asking</div>
+          <div class="step-desc">Select HR, QA, or Developer. Then ask any question about UAC Phase 2 in plain language. Try the suggested questions or type your own.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Example questions -->
+  <div class="section">
+    <div class="section-title">Example questions you can ask</div>
+    <div class="questions-grid">
+      <div class="q-chip">What is the Effective From month picker?</div>
+      <div class="q-chip">What happens when I click Save?</div>
+      <div class="q-chip">Give me all test cases for exit date</div>
+      <div class="q-chip">How does auto-transfer work?</div>
+      <div class="q-chip">What does the cron check in Account Transfer Tool?</div>
+      <div class="q-chip">What is the DB schema for effective_month?</div>
+    </div>
+  </div>
+
+  <!-- Feedback CTA -->
+  <div class="feedback-cta">
+    <h3>📝 Share your feedback after using it</h3>
+    <p>Takes 2 minutes. Tell us what worked, what didn't, and any questions the bot couldn't answer correctly. Every response helps us improve it for the whole team.</p>
+    <button class="cta-btn" onclick="document.getElementById('feedback-form').scrollIntoView({behavior:'smooth'})">Give Feedback →</button>
+  </div>
+
+  <!-- Inline feedback form -->
+  <div id="feedback-form" style="background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:28px 24px;margin-bottom:28px;">
+    <h3 style="font-size:17px;font-weight:700;margin-bottom:4px;">UAC Assistant — Feedback Form</h3>
+    <p style="font-size:13px;color:var(--text3);margin-bottom:20px;">Beta v1.0 · Takes 2 minutes</p>
+
+    <div id="form-body">
+      <!-- Q1 Role -->
+      <div style="margin-bottom:18px;">
+        <label style="font-size:13px;font-weight:600;color:var(--text);display:block;margin-bottom:8px;">1. Your role</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;"><input type="radio" name="role" value="HR"> HR</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;"><input type="radio" name="role" value="QA"> QA Engineer</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;"><input type="radio" name="role" value="Developer"> Developer</label>
+        </div>
+      </div>
+
+      <!-- Q2 Rating -->
+      <div style="margin-bottom:18px;">
+        <label style="font-size:13px;font-weight:600;color:var(--text);display:block;margin-bottom:8px;">2. How useful was the bot overall?</label>
+        <div style="display:flex;gap:6px;">
+          <button onclick="rate(1)" id="r1" class="star-btn">⭐</button>
+          <button onclick="rate(2)" id="r2" class="star-btn">⭐</button>
+          <button onclick="rate(3)" id="r3" class="star-btn">⭐</button>
+          <button onclick="rate(4)" id="r4" class="star-btn">⭐</button>
+          <button onclick="rate(5)" id="r5" class="star-btn">⭐</button>
+        </div>
+        <div id="rating-label" style="font-size:12px;color:var(--text3);margin-top:4px;"></div>
+      </div>
+
+      <!-- Q3 Wrong answer -->
+      <div style="margin-bottom:18px;">
+        <label style="font-size:13px;font-weight:600;color:var(--text);display:block;margin-bottom:8px;">3. Did the bot give any wrong or incomplete answers?</label>
+        <div style="display:flex;gap:8px;margin-bottom:10px;">
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;"><input type="radio" name="wrong" value="yes" onchange="toggleWrong(true)"> Yes</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer;"><input type="radio" name="wrong" value="no" onchange="toggleWrong(false)"> No — all good</label>
+        </div>
+        <div id="wrong-detail" style="display:none;">
+          <textarea id="wrong-q" placeholder="What did you ask?" rows="2" style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:vertical;margin-bottom:8px;"></textarea>
+          <textarea id="wrong-a" placeholder="What answer did the bot give? What should the correct answer be?" rows="3" style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:vertical;"></textarea>
+        </div>
+      </div>
+
+      <!-- Q4 Missing -->
+      <div style="margin-bottom:18px;">
+        <label style="font-size:13px;font-weight:600;color:var(--text);display:block;margin-bottom:8px;">4. What topic or question was missing from the bot?</label>
+        <textarea id="missing" placeholder="e.g. It couldn't answer questions about the Supply-side Account Transfer Tool..." rows="2" style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:vertical;"></textarea>
+      </div>
+
+      <!-- Q5 Suggestion -->
+      <div style="margin-bottom:22px;">
+        <label style="font-size:13px;font-weight:600;color:var(--text);display:block;margin-bottom:8px;">5. Any other suggestion or comment?</label>
+        <textarea id="suggestion" placeholder="Anything else you'd like to see improved..." rows="2" style="width:100%;background:var(--bg);border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;font-family:'DM Sans',sans-serif;outline:none;resize:vertical;"></textarea>
+      </div>
+
+      <button onclick="submitFeedback()" style="width:100%;background:var(--navy);color:#fff;border:none;border-radius:10px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s;">Submit Feedback</button>
+    </div>
+
+    <div id="form-thanks" style="display:none;text-align:center;padding:24px 0;">
+      <div style="font-size:40px;margin-bottom:12px;">🙏</div>
+      <h3 style="font-size:18px;font-weight:700;margin-bottom:6px;">Thank you for your feedback!</h3>
+      <p style="font-size:13px;color:var(--text2);">Your input helps us improve the UAC Assistant for the whole team.</p>
+      <div id="feedback-summary" style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:14px;margin-top:16px;font-size:12.5px;color:var(--text2);text-align:left;line-height:1.8;"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <strong>UAC Phase 2 Assistant</strong> · Beta v1.0 · Built by Ajinkyaraj Nayak<br>
+    For issues or questions, ping <strong>Ajinkyaraj</strong> directly.
+  </div>
+
+</div>
+
+<style>
+.star-btn{background:none;border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:18px;cursor:pointer;transition:.15s;opacity:.4;}
+.star-btn.active{opacity:1;background:var(--amber-l);border-color:#FCD34D;}
+</style>
+
+<script>
+var rating = 0;
+var ratingLabels = ['','😞 Not helpful','🙁 Somewhat helpful','😐 OK','🙂 Helpful','😃 Very helpful!'];
+
+function rate(n) {
+  rating = n;
+  for(var i=1;i<=5;i++){
+    var btn = document.getElementById('r'+i);
+    btn.classList.toggle('active', i<=n);
+  }
+  document.getElementById('rating-label').textContent = ratingLabels[n];
+}
+
+function toggleWrong(show){
+  document.getElementById('wrong-detail').style.display = show ? 'block' : 'none';
+}
+
+function submitFeedback(){
+  var role = document.querySelector('input[name="role"]:checked');
+  var wrongRadio = document.querySelector('input[name="wrong"]:checked');
+
+  if(!role){ alert('Please select your role.'); return; }
+  if(!rating){ alert('Please give a rating.'); return; }
+
+  var summary = '';
+  summary += '<strong>Role:</strong> ' + role.value + '<br>';
+  summary += '<strong>Rating:</strong> ' + rating + '/5 — ' + ratingLabels[rating] + '<br>';
+
+  if(wrongRadio && wrongRadio.value === 'yes'){
+    var wq = document.getElementById('wrong-q').value;
+    var wa = document.getElementById('wrong-a').value;
+    if(wq) summary += '<strong>Wrong answer — Question:</strong> ' + wq + '<br>';
+    if(wa) summary += '<strong>Wrong answer — Detail:</strong> ' + wa + '<br>';
+  } else {
+    summary += '<strong>Wrong answers:</strong> None reported<br>';
+  }
+
+  var missing = document.getElementById('missing').value;
+  if(missing) summary += '<strong>Missing topic:</strong> ' + missing + '<br>';
+
+  var suggestion = document.getElementById('suggestion').value;
+  if(suggestion) summary += '<strong>Suggestion:</strong> ' + suggestion;
+
+  document.getElementById('feedback-summary').innerHTML = summary;
+  document.getElementById('form-body').style.display = 'none';
+  document.getElementById('form-thanks').style.display = 'block';
+
+  // Log to console for easy collection
+  console.log('=== UAC FEEDBACK ===');
+  console.log(summary.replace(/<[^>]+>/g,' ').replace(/\s+/g,' '));
+}
+</script>
+</body>
+</html>
