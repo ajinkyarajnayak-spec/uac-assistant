@@ -310,9 +310,33 @@ function submitFeedback(){
   document.getElementById('form-body').style.display = 'none';
   document.getElementById('form-thanks').style.display = 'block';
 
-  // Log to console for easy collection
-  console.log('=== UAC FEEDBACK ===');
-  console.log(summary.replace(/<[^>]+>/g,' ').replace(/\s+/g,' '));
+  // Build plain text email body
+  var emailBody = 'UAC Assistant Feedback\n\n';
+  emailBody += 'Role: ' + role.value + '\n';
+  emailBody += 'Rating: ' + rating + '/5 - ' + ratingLabels[rating] + '\n';
+
+  var wrongRadioVal = document.querySelector('input[name="wrong"]:checked');
+  if(wrongRadioVal && wrongRadioVal.value === 'yes'){
+    var wq = document.getElementById('wrong-q').value;
+    var wa = document.getElementById('wrong-a').value;
+    if(wq) emailBody += '\nWrong Answer - Question: ' + wq;
+    if(wa) emailBody += '\nWrong Answer - Detail: ' + wa;
+  } else {
+    emailBody += 'Wrong answers: None reported\n';
+  }
+
+  var missingVal = document.getElementById('missing').value;
+  if(missingVal) emailBody += '\nMissing topic: ' + missingVal;
+
+  var suggestionVal = document.getElementById('suggestion').value;
+  if(suggestionVal) emailBody += '\nSuggestion: ' + suggestionVal;
+
+  // Open email client
+  var mailtoLink = 'mailto:ajinkyaraj.nayak@affinity.com'
+    + '?subject=' + encodeURIComponent('UAC Assistant Feedback — ' + role.value + ' — ' + rating + '/5')
+    + '&body=' + encodeURIComponent(emailBody);
+
+  window.location.href = mailtoLink;
 }
 </script>
 </body>
